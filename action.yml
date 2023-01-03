@@ -40,3 +40,4 @@ runs:
           "${{ inputs.planetscale-db-name }}" \
           "${{ inputs.branch-name }}" \
           "${{ inputs.migrate-command }}"
+      shell: bash
