@@ -1,22 +1,16 @@
 #!/bin/bash
 
 # Command-line arguments
-token_id=$1
-token=$2
-org=$3
-db=$4
-branch=${5:-$(date +%Y%m%d%H%M%S)}
-command=$6
+org=$1
+db=$2
+branch=${3:-$(date +%Y%m%d%H%M%S)}
+command=$4
 
-# Make sure authentication arguments aren't empty
-if [[ -z "$token_id" || -z "$token" ]]; then
-    echo "The \"planetscale-service-token-id\" and \"planetscale-service-token\" values cannot be empty."
+# Make sure authentication environment variables are set
+if [[ -z "$PLANETSCALE_SERVICE_TOKEN_ID" || -z "$PLANETSCALE_SERVICE_TOKEN" ]]; then
+    echo "The \"PLANETSCALE_SERVICE_TOKEN_ID\" and \"PLANETSCALE_SERVICE_TOKEN\" environment variables must be set."
     exit 1
 fi
-
-# Set environment variables
-export PLANETSCALE_SERVICE_TOKEN_ID=$token_id
-export PLANETSCALE_SERVICE_TOKEN=$token
 
 # Create the branch and wait for readiness
 pscale branch create "$db" "$branch" --org "$org" --wait

@@ -23,12 +23,20 @@ inputs:
     description: The command to run database migrations
     required: true
 runs:
-  using: docker
-  image: Dockerfile
-  args:
-    - ${{ inputs.planetscale-service-token-id }}
-    - ${{ inputs.planetscale-service-token }}
-    - ${{ inputs.planetscale-org-name }}
-    - ${{ inputs.planetscale-db-name }}
-    - ${{ inputs.branch-name }}
-    - ${{ inputs.migrate-command }}
+  using: composite
+  steps:
+    - name: Install the latest pscale CLI from GitHub releases
+      uses: jaxxstorm/action-install-gh-release@v1.9.0
+      with:
+        repo: planetscale/pscale
+
+    - name: Run the migration script
+      env:
+        PLANETSCALE_SERVICE_TOKEN_ID: ${{ inputs.planetscale-service-token-id }}
+        PLANETSCALE_SERVICE_TOKEN: ${{ inputs.planetscale-service-token }}
+      run: |
+        ${{ github.action_path }}/script.sh \
+          "${{ inputs.planetscale-org-name }}" \
+          "${{ inputs.planetscale-db-name }}" \
+          "${{ inputs.branch-name }}" \
+          "${{ inputs.migrate-command }}"
