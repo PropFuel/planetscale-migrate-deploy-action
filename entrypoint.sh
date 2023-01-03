@@ -14,6 +14,10 @@ if [[ -z "$token_id" || -z "$token" ]]; then
     exit 1
 fi
 
+# Set environment variables
+export PLANETSCALE_SERVICE_TOKEN_ID=$token_id
+export PLANETSCALE_SERVICE_TOKEN=$token
+
 # Set the org
 pscale org switch "$org"
 
