@@ -28,7 +28,7 @@ runs:
     - name: Install the latest pscale CLI from GitHub releases
       uses: jaxxstorm/action-install-gh-release@v1.9.0
       with:
-        repo: planetscale/pscale
+        repo: planetscale/cli
 
     - name: Run the migration script
       env:
