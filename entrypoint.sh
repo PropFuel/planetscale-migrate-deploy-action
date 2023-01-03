@@ -18,22 +18,19 @@ fi
 export PLANETSCALE_SERVICE_TOKEN_ID=$token_id
 export PLANETSCALE_SERVICE_TOKEN=$token
 
-# Set the org
-pscale org switch "$org"
-
 # Create the branch and wait for readiness
-pscale branch create "$db" "$branch" --wait
+pscale branch create "$db" "$branch" --org "$org" --wait
 
 # Connect to the branch and run the migrations
-pscale connect "$db" "$branch" --execute "$command"
+pscale connect "$db" "$branch" --org "$org" --execute "$command"
 
 # Create the deploy request and get the number
-number=$(pscale deploy-request create "$db" "$branch" --format json | jq -r '.number')
+number=$(pscale deploy-request create "$db" "$branch" --org "$org" --format json | jq -r '.number')
 
 # Wait for the deploy request to be deployable
 while true; do
     # Check the deploy request deployment for "deployable" property
-    deployable=$(pscale deploy-request show "$db" "$number" --format json | jq -r '.deployment.deployable')
+    deployable=$(pscale deploy-request show "$db" "$number" --org "$org" --format json | jq -r '.deployment.deployable')
 
     if [[ "$deployable" == "true" ]]; then
         echo "Deploy request #$number is now deployable."
@@ -55,12 +52,12 @@ while true; do
 done
 
 # Check the deployment state
-state=$(pscale deploy-request show "$db" "$number" --format json | jq -r '.deployment.state')
+state=$(pscale deploy-request show "$db" "$number" --org "$org" --format json | jq -r '.deployment.state')
 
 # Deploy, if ready
 case $state in
     "ready")
-        pscale deploy-request deploy "$db" "$number" --wait
+        pscale deploy-request deploy "$db" "$number" --org "$org" --wait
         ;;
 
     "no_changes")
@@ -73,4 +70,4 @@ case $state in
 esac
 
 # Delete the branch once deployed
-pscale branch delete "$db" "$branch" --force
+pscale branch delete "$db" "$branch" --org "$org" --force
