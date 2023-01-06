@@ -22,6 +22,10 @@ inputs:
   migrate-command:
     description: The command to run database migrations
     required: true
+  delete-branch:
+    description: Delete the created branch upon deployment
+    required: false
+    default: true
 runs:
   using: composite
   steps:
@@ -39,5 +43,6 @@ runs:
           "${{ inputs.planetscale-org-name }}" \
           "${{ inputs.planetscale-db-name }}" \
           "${{ inputs.branch-name }}" \
-          "${{ inputs.migrate-command }}"
+          "${{ inputs.migrate-command }}" \
+          "${{ inputs.delete-branch }}"
       shell: bash
