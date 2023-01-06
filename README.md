@@ -43,9 +43,16 @@ We recommend storing sensitive data as [GitHub encrypted secrets](https://docs.g
 
 ### Optional Inputs
 
-| Input         | Description                                 | Default                                   |
-| ------------- | ------------------------------------------- | ----------------------------------------- |
-| `branch-name` | The branch name to use for this deployment. | Current timestamp (e.g. `20221105063014`) |
+| Input           | Description                                                                               | Default                                   |
+| --------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `branch-name`   | The branch name to use for this deployment.                                               | Current timestamp (e.g. `20221105063014`) |
+| `delete-branch` | Delete the branch after a successful deployment. See [Branch Deletion](#branch-deletion). | `true`                                    |
+
+### Branch Deletion
+
+This action will automatically attempt to delete the PlanetScale branch it created once it is succesfully deployed. This is most often the desired behavior. If you wish to manually delete your branch after deployment, set this value to `false`.
+
+If you are using PlanetScale's "Revert a schema change" [beta feature](https://planetscale.com/docs/concepts/deploy-requests#revert-a-schema-change) you will also want to set this value to `false`. Attempting to delete a branch within the 30 minute revert window will result in an error.
 
 ## Examples
 
@@ -84,4 +91,5 @@ jobs:
           planetscale-db-name: ${{ secrets.PLANETSCALE_DB_NAME }}
           branch-name: my-first-automated-branch
           migrate-command: php artisan migrate --force
+          delete-branch: false
 ```

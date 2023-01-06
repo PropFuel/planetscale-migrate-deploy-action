@@ -5,6 +5,7 @@ org=$1
 db=$2
 branch=${3:-$(date +%Y%m%d%H%M%S)}
 command=$4
+delete=$5
 
 # Make sure authentication environment variables are set
 if [[ -z "$PLANETSCALE_SERVICE_TOKEN_ID" || -z "$PLANETSCALE_SERVICE_TOKEN" ]]; then
@@ -64,4 +65,6 @@ case $state in
 esac
 
 # Delete the branch once deployed
-pscale branch delete "$db" "$branch" --org "$org" --force
+if [[ "$delete" == "true" || "$delete" == "True" || "$delete" == "TRUE" ]]; then
+    pscale branch delete "$db" "$branch" --org "$org" --force
+fi
